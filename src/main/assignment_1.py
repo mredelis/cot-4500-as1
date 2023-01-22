@@ -1,8 +1,5 @@
 import numpy as np
 
-# 3) Repeat exercise 1 using three-digit rounding arithmetic
-# 4) Compute the absolute and relative error with the exact value from question 1 and its 3 digit rounding
-
 # 64-bit (binary digit) representation of a real number
 # First bit denoted as s is a sign representation followed by
 # 11-bit exponent denoted by c is called the characteristic
@@ -25,7 +22,6 @@ def exercise_1(b_num: str):
         mantissa += int(b_num[i]) * (1 / 2) ** (i - 11)
 
     decimal_number = sign * (2 ** (exponent - 1023)) * (1 + mantissa)
-
     return decimal_number
 
 
@@ -51,52 +47,34 @@ def exercise_3(fraction: float, exponent: int, digits_to_rounding: int):
     return exercise_2(new_fraction, exponent, digits_to_rounding)
 
 
-# binary_number = "0100000000111011100100010000000000000000000000000000000000000000"
+# Absolute error with the exact value from question 1 and its 3 digit rounding
+def absolute_error(precise: float, approximate: float):
+    sub_operation = precise - approximate
+    return abs(sub_operation)
+
+
+# Relative error with the exact value from question 1 and its 3 digit rounding
+def relative_error(precise: float, approximate: float):
+    sub_operation = absolute_error(precise, approximate)
+    div_operation = sub_operation / abs(precise)
+    return div_operation
+
+
 binary_number = "010000000111111010111001"
 res1 = exercise_1(binary_number)
-print(format(res1, ".5f"))
-
-# Book examples
-# (fraction, exponent) = normalized_form(3.14159265)
-# res2 = exercise_2(fraction, exponent, 5)
-# res3 = exercise_3(fraction, exponent, 5)
+print(format(res1, ".5f"), "\n")
 
 (fraction, exponent) = normalized_form(res1)
 res2 = exercise_2(fraction, exponent, 3)
 res3 = exercise_3(fraction, exponent, 3)
+res4_1 = absolute_error(res1, res2)
+res4_2 = relative_error(res1, res3)
 
-print(res2)
-print(res3)
+print(res2, "\n")
+print(res3, "\n")
+print(res4_1)
+print(res4_2, "\n")
 
-
-# # Calculate the binary number with double precision and 3 digit chopping
-
-
-# def task_two(result: float):
-#     print(float(int(result * 1000) / 1000), "\n")
-
-# # Calculate the binary number with double precision and 3 digit rounding
-
-
-# def task_three(result: float):
-#     rounded_result: float = round(
-#         float(int((result + 0.0005) * 1000) / 1000), 3)
-#     print(rounded_result, "\n")
-#     return rounded_result
-
-# # Compute absolute error for the difference between double precision and 3 digit rounding
-
-
-# def task_four_absolute(result: float, rounded_result: float):
-#     absolute_error_val = abs(result - rounded_result)
-#     print(absolute_error_val, "\n")
-#     return absolute_error_val
-
-# # Compute relative error for the difference between double precision and 3 digit rounding
-
-
-# def task_four_relative(result: float, absolute_val: float):
-#     print(absolute_val / abs(result), "\n")
 
 # # Check one for series: alternating sequence
 
