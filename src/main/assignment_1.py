@@ -60,9 +60,36 @@ def relative_error(precise: float, approximate: float):
     return div_operation
 
 
+# Exercise 5 minimum number of terms needed to computer f(1) with error < 10^-4?
+def check_for_alternating(series: str) -> bool:
+    # check for (-1)^k term
+    if "-1**k" in series:
+        return True
+    return False
+
+
+def check_for_decreasing(series: str, x: int):
+    k = 1
+    previous_term = abs(eval(series))
+    # print(series_first_term)
+    for k in range(2, 100):
+        next_term = abs(eval(series))
+        # print(next_term)
+        if previous_term <= next_term:
+            return False
+        previous_term = next_term
+    return True
+
+
+def compute_minimun_terms(error: float) -> int:
+    min_number_terms = 0
+    while (min_number_terms + 1) ** 3 < (1 / error):
+        min_number_terms += 1
+    return min_number_terms
+
+
 binary_number = "010000000111111010111001"
 res1 = exercise_1(binary_number)
-print(format(res1, ".5f"), "\n")
 
 (fraction, exponent) = normalized_form(res1)
 res2 = exercise_2(fraction, exponent, 3)
@@ -70,10 +97,23 @@ res3 = exercise_3(fraction, exponent, 3)
 res4_1 = absolute_error(res1, res2)
 res4_2 = relative_error(res1, res3)
 
+series: str = "(-1**k) * (x**k) / (k**3)"
+x: int = 1
+error: float = 10 ** (-1 * 4)
+
+
+check1: bool = check_for_alternating(series)
+check2: bool = check_for_decreasing(series, x)
+if check1 and check2:
+    res5 = compute_minimun_terms(error)
+
+print(format(res1, ".5f"), "\n")
 print(res2, "\n")
 print(res3, "\n")
 print(res4_1)
 print(res4_2, "\n")
+# print(check1 and check2)
+print(res5)
 
 
 # # Check one for series: alternating sequence
