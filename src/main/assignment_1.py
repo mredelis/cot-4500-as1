@@ -1,8 +1,5 @@
 import numpy as np
 
-# 1) Use double precision, calculate the resulting values(format to 5 decimal places)
-#     a) 010000000111111010111001
-# 2) Repeat exercise 1 using three-digit chopping arithmetic
 # 3) Repeat exercise 1 using three-digit rounding arithmetic
 # 4) Compute the absolute and relative error with the exact value from question 1 and its 3 digit rounding
 
@@ -29,48 +26,48 @@ def exercise_1(b_num: str):
 
     decimal_number = sign * (2 ** (exponent - 1023)) * (1 + mantissa)
 
-    print(round(decimal_number, 5))
+    return decimal_number
 
 
-# if __name__ == "__main__":
-binary_number = "0100000000111011100100010000000000000000000000000000000000000000"
-exp: int = exercise_1(binary_number)
+def normalized_form(dec_num: float):
+    n: int = 0
+    # write number in normalized decimal form
+    while dec_num >= 1:
+        dec_num = dec_num / 10
+        n += 1
+    return (dec_num, n)
 
 
-# EXPONENT = 11
-# MANTISSA = 52
+# Exercise 1 using three-digit chopping arithmetic
+def exercise_2(fraction: float, exponent: int, digits_to_chopping: int):
+    chopped_value = int(fraction * 10**digits_to_chopping) / 10**digits_to_chopping
+    return round(chopped_value * 10**exponent, digits_to_chopping - 1)
 
 
-# #
-# # We have a "constant" length of 11 for exponent in the binary number
-# LENGTH_OF_EXPONENT = 11
-
-# # Although infinity is much larger than 1000, we can assume that 1000 loops would pick up
-# # on whether or not the function is decreasing
-# INFINITY = 1000
-
-# # Calculate the binary number with double precision and 5 decimal places
+# Exercise 1 using three-digit rounding arithmetic
+def exercise_3(fraction: float, exponent: int, digits_to_rounding: int):
+    # add 5 to the (k+1) digit and then chop after the kth digit
+    new_fraction = fraction + 5 / 10 ** (digits_to_rounding + 1)
+    return exercise_2(new_fraction, exponent, digits_to_rounding)
 
 
-# def task_one(binary_num: str):
-#     negative: bool = binary_num[0] == '1'
-#     exponent: int = 0
-#     mantisa: float = 0
-#     final_num: float = 0
+# binary_number = "0100000000111011100100010000000000000000000000000000000000000000"
+binary_number = "010000000111111010111001"
+res1 = exercise_1(binary_number)
+print(format(res1, ".5f"))
 
-#     for i in range(1, LENGTH_OF_EXPONENT + 1):
-#         if binary_num[i] == '1':
-#             exponent += 2**(11 - i)
+# Book examples
+# (fraction, exponent) = normalized_form(3.14159265)
+# res2 = exercise_2(fraction, exponent, 5)
+# res3 = exercise_3(fraction, exponent, 5)
 
-#     for i in range(LENGTH_OF_EXPONENT + 1, len(binary_num)):
-#         if binary_num[i] == '1':
-#             mantisa += (1 / 2)**(i - 11)
+(fraction, exponent) = normalized_form(res1)
+res2 = exercise_2(fraction, exponent, 3)
+res3 = exercise_3(fraction, exponent, 3)
 
-#     final_num = (-1 if negative else 1) * \
-#         (2**(exponent - 1023)) * (1 + mantisa)
+print(res2)
+print(res3)
 
-#     print(format(final_num, ".5f"), "\n")
-#     return final_num
 
 # # Calculate the binary number with double precision and 3 digit chopping
 
