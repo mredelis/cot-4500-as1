@@ -171,7 +171,7 @@ if check1 and check2:
 
 left = -4
 right = 7
-error_tolerance: float = 10 ** (-1 * 4)
+error_tolerance: float = 10 ** (-4)
 function_string = "x**3 + 4*(x**2) - 10"
 
 res6_bisection = bisection_method(left, right, error_tolerance, function_string)
