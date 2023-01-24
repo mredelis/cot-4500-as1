@@ -1,10 +1,5 @@
 import numpy as np
 
-# 64-bit (binary digit) representation of a real number
-# First bit denoted as s is a sign representation followed by
-# 11-bit exponent denoted by c is called the characteristic
-# 52-bit binary fraction denoted by f called the mantissa
-
 EXPONENT_LENGTH = 11
 MANTISSA_LENGTH = 52
 MAX_ITERATIONS = 100
@@ -165,7 +160,7 @@ res4_2 = relative_error(res1, res3)
 
 series: str = "(-1**k) * (x**k) / (k**3)"
 x: int = 1
-error: float = 10 ** (-1 * 4)
+error: float = 10 ** (-4)
 
 
 check1: bool = check_for_alternating(series)
