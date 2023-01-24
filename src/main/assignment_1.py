@@ -7,6 +7,7 @@ import numpy as np
 
 EXPONENT_LENGTH = 11
 MANTISSA_LENGTH = 52
+MAX_ITERATIONS = 100
 
 # Calculate decimal number using double precision (format to 5 decimal places)
 def exercise_1(b_num: str):
@@ -34,13 +35,13 @@ def normalized_form(dec_num: float):
     return (dec_num, n)
 
 
-# Exercise 1 using three-digit chopping arithmetic
+# Repeat Ex 1 using three-digit chopping arithmetic
 def exercise_2(fraction: float, exponent: int, digits_to_chopping: int):
     chopped_value = int(fraction * 10**digits_to_chopping) / 10**digits_to_chopping
     return round(chopped_value * 10**exponent, digits_to_chopping - 1)
 
 
-# Exercise 1 using three-digit rounding arithmetic
+# Repeat Ex 1 using three-digit rounding arithmetic
 def exercise_3(fraction: float, exponent: int, digits_to_rounding: int):
     # add 5 to the (k+1) digit and then chop after the kth digit
     new_fraction = fraction + 5 / 10 ** (digits_to_rounding + 1)
@@ -71,10 +72,9 @@ def check_for_alternating(series: str) -> bool:
 def check_for_decreasing(series: str, x: int):
     k = 1
     previous_term = abs(eval(series))
-    # print(series_first_term)
+
     for k in range(2, 100):
         next_term = abs(eval(series))
-        # print(next_term)
         if previous_term <= next_term:
             return False
         previous_term = next_term
@@ -88,9 +88,75 @@ def compute_minimun_terms(error: float) -> int:
     return min_number_terms
 
 
-binary_number = "010000000111111010111001"
-res1 = exercise_1(binary_number)
+# Exercise 6 number of iterations necessary to solve f(x) = x^3 + 4x^2 – 10 = 0 with accuracy 10^-4 using a = -4 and b = 7.
 
+# Bisection method finds the first zero of any function to a certain error threshold
+def bisection_method(left: float, right: float, tolerance: float, given_function: str):
+    # Check f(a) and f(b) have different signs
+    x = left
+    intial_left = eval(given_function)
+    x = right
+    intial_right = eval(given_function)
+
+    if intial_left * intial_right >= 0:
+        print("Invalid inputs. Not on opposite sides of the function")
+        return
+
+    i = 0  # iteration counter
+    while abs(right - left) > tolerance and i <= MAX_ITERATIONS:
+        i += 1
+
+        mid_point = (left + right) / 2
+        x = mid_point
+        evaluated_midpoint = eval(given_function)
+
+        if evaluated_midpoint == 0.0:
+            break
+
+        # find function(left)
+        x = left
+        evaluated_left_point = eval(given_function)
+
+        # this section basically checks if we have crossed the origin point (another way
+        # to describe this is if f(midpoint) * f(left_point) changed signs)
+        first_conditional: bool = evaluated_left_point < 0 and evaluated_midpoint > 0
+        second_conditional: bool = evaluated_left_point > 0 and evaluated_midpoint < 0
+
+        if first_conditional or second_conditional:
+            right = mid_point
+        else:
+            left = mid_point
+
+    return i
+
+
+# Newton Raphson method finds a solution to f (x) = 0 given an initial approximation p0
+def newton_raphson_method(initial_approximation: float, tolerance: float, given_function: str):
+
+    i = 1
+    function_derivative: str = "3*x**2 + 8*x"
+
+    while i <= MAX_ITERATIONS:
+        x = initial_approximation
+
+        if eval(function_derivative) != 0:
+            next_approximation = initial_approximation - eval(given_function) / eval(function_derivative)
+
+            if abs(next_approximation - initial_approximation) < tolerance:
+                return i  # procedure was successfull
+
+            i += 1
+            initial_approximation = next_approximation
+        else:
+            print("Error derivative is zero")
+            return
+
+    print(f"The method failed after {MAX_ITERATIONS} number of iterations")
+
+
+binary_number = "010000000111111010111001"
+
+res1 = exercise_1(binary_number)
 (fraction, exponent) = normalized_form(res1)
 res2 = exercise_2(fraction, exponent, 3)
 res3 = exercise_3(fraction, exponent, 3)
@@ -107,104 +173,22 @@ check2: bool = check_for_decreasing(series, x)
 if check1 and check2:
     res5 = compute_minimun_terms(error)
 
+
+left = -4
+right = 7
+error_tolerance: float = 10 ** (-1 * 4)
+function_string = "x**3 + 4*(x**2) - 10"
+
+res6_bisection = bisection_method(left, right, error_tolerance, function_string)
+
+initial_approximation: float = left
+res6_newton = newton_raphson_method(initial_approximation, error_tolerance, function_string)
+
 print(format(res1, ".5f"), "\n")
 print(res2, "\n")
 print(res3, "\n")
 print(res4_1)
 print(res4_2, "\n")
-# print(check1 and check2)
-print(res5)
-
-
-# # Check one for series: alternating sequence
-
-
-# def check_for_alternating(function_a: str):
-#     return "-1**k" in function_a
-
-# # Check two for series: decreasing sequence
-
-
-# def check_for_decreasing(function_a: str, x: int):
-#     k = 1
-#     previous_val = abs(eval(function_a))
-#     for k in range(2, INFINITY):
-#         result = abs(eval(function_a))
-#         if (previous_val <= result):
-#             return False
-#         previous_val = result
-#     return True
-
-# # Now that those two previous checks are complete, calculate minimum terms
-
-
-# def task_five(error: int):
-#     min_terms = 0
-#     while ((min_terms + 1) <= 10**(-1 * error / 3)):
-#         min_terms += 1
-
-#     print(min_terms, "\n")
-
-# # Determine number of iterations to solve with bisection method
-
-
-# def task_six_bisection(function_a: str, error: float, left: int, right: int):
-#     x = 0
-#     i = 0
-#     while (abs(right - left) > error and i < INFINITY):
-#         x = (left + right) / 2
-#         if eval(function_a) < 0 and eval(function_a) > 0 or eval(function_a) > 0 and eval(function_a) < 0:
-#             right = x
-#         else:
-#             left = x
-#         i += 1
-#     print(i, "\n")
-
-# # Determine number of iterations to solve with Newton method
-
-
-# def task_six_newton(function_a: str, function_a_der: str, x: float, error: float):
-#     i = 0
-#     while i < INFINITY:
-#         if eval(function_a_der) != 0:
-#             x_next = x - eval(function_a) / eval(function_a_der)
-#             if (abs(x_next - x) < error):
-#                 print(i)
-#                 return
-#             x = x_next
-#             i += 1
-#         else:
-#             print("Failure: Derivation is 0")
-#     print("Failure: Maximum number of iterations")
-
-
-# # binary_num = "0100000000111011100100011010000000000000000000000000000000000000"
-# binary_num = "010000000111111010111001"
-
-# result: float = task_one(binary_num)
-# task_two(result)
-
-# rounded_result: float = task_three(result)
-
-# absolute_error_val = task_four_absolute(result, rounded_result)
-
-# task_four_relative(result, absolute_error_val)
-
-# x: int = 1
-# function_a: str = "(-1**k) * (x**k) / (k**3)"
-# error: int = -4
-
-# if (check_for_alternating(function_a) and check_for_decreasing(function_a, x)):
-#     task_five(error)
-
-# function_a = "x**3 + 4*x**2 - 10"
-# error = 10**(-4)
-
-# left: int = 4
-# right: int = 7
-
-# task_six_bisection(function_a, error, left, right)
-
-# function_a_der = "3*x**2 + 8*x"
-
-# task_six_newton(function_a, function_a_der, abs(right - left), error)
+print(res5, "\n")
+print(res6_bisection, "\n")
+print(res6_newton)
