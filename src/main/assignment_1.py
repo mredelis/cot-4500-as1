@@ -1,4 +1,5 @@
 import numpy as np
+from decimal import Decimal, getcontext
 
 EXPONENT_LENGTH = 11
 MANTISSA_LENGTH = 52
@@ -18,6 +19,8 @@ def exercise_1(b_num: str):
         mantissa += int(b_num[i]) * (1 / 2) ** (i - 11)
 
     decimal_number = sign * (2 ** (exponent - 1023)) * (1 + mantissa)
+    print(decimal_number)
+    print()
     return decimal_number
 
 
@@ -33,27 +36,31 @@ def normalized_form(dec_num: float):
 # Repeat Ex 1 using three-digit chopping arithmetic
 def exercise_2(fraction: float, exponent: int, digits_to_chopping: int):
     chopped_value = int(fraction * 10**digits_to_chopping) / 10**digits_to_chopping
-    return round(chopped_value * 10**exponent, digits_to_chopping - 1)
+    return chopped_value * 10**exponent
 
 
 # Repeat Ex 1 using three-digit rounding arithmetic
 def exercise_3(fraction: float, exponent: int, digits_to_rounding: int):
-    # add 5 to the (k+1) digit and then chop after the kth digit
+    # add 5 to the (k+1) digit
     new_fraction = fraction + 5 / 10 ** (digits_to_rounding + 1)
+    # then chop after the kth digit
     return exercise_2(new_fraction, exponent, digits_to_rounding)
 
 
 # Absolute error with the exact value from question 1 and its 3 digit rounding
 def absolute_error(precise: float, approximate: float):
-    sub_operation = precise - approximate
-    return abs(sub_operation)
+    # sub_operation = precise - approximate
+    sub_operation = approximate - precise
+    print(abs(sub_operation))
 
 
 # Relative error with the exact value from question 1 and its 3 digit rounding
 def relative_error(precise: float, approximate: float):
-    sub_operation = absolute_error(precise, approximate)
-    div_operation = sub_operation / abs(precise)
-    return div_operation
+    # print(getcontext())
+    if precise != 0:
+        rel_err = abs(Decimal(precise) - Decimal(approximate)) / abs(Decimal(precise))
+        print(rel_err)
+        print()
 
 
 # Exercise 5 minimum number of terms needed to computer f(1) with error < 10^-4?
@@ -80,7 +87,8 @@ def compute_minimun_terms(error: float) -> int:
     min_number_terms = 0
     while (min_number_terms + 1) ** 3 < (1 / error):
         min_number_terms += 1
-    return min_number_terms
+    print(min_number_terms)
+    print()
 
 
 # Exercise 6 number of iterations necessary to solve f(x) = x^3 + 4x^2 – 10 = 0 with accuracy 10^-4 using a = -4 and b = 7.
@@ -122,7 +130,8 @@ def bisection_method(left: float, right: float, tolerance: float, given_function
         else:
             left = mid_point
 
-    return i
+    print(i)
+    print()
 
 
 # Newton Raphson method finds a solution to f (x) = 0 given an initial approximation p0
@@ -138,7 +147,9 @@ def newton_raphson_method(initial_approximation: float, tolerance: float, given_
             next_approximation = initial_approximation - eval(given_function) / eval(function_derivative)
 
             if abs(next_approximation - initial_approximation) < tolerance:
-                return i  # procedure was successfull
+                print(i)
+                print()
+                return  # procedure was successfull
 
             i += 1
             initial_approximation = next_approximation
@@ -152,21 +163,27 @@ def newton_raphson_method(initial_approximation: float, tolerance: float, given_
 binary_number = "010000000111111010111001"
 
 res1 = exercise_1(binary_number)
+
 (fraction, exponent) = normalized_form(res1)
+
 res2 = exercise_2(fraction, exponent, 3)
+print(res2)
+print()
+
 res3 = exercise_3(fraction, exponent, 3)
-res4_1 = absolute_error(res1, res2)
-res4_2 = relative_error(res1, res3)
+print(res3)
+print()
+
+absolute_error(res1, res3)
+relative_error(res1, res3)
 
 series: str = "(-1**k) * (x**k) / (k**3)"
 x: int = 1
 error: float = 10 ** (-4)
-
-
 check1: bool = check_for_alternating(series)
 check2: bool = check_for_decreasing(series, x)
 if check1 and check2:
-    res5 = compute_minimun_terms(error)
+    compute_minimun_terms(error)
 
 
 left = -4
@@ -174,16 +191,7 @@ right = 7
 error_tolerance: float = 10 ** (-4)
 function_string = "x**3 + 4*(x**2) - 10"
 
-res6_bisection = bisection_method(left, right, error_tolerance, function_string)
+bisection_method(left, right, error_tolerance, function_string)
 
 initial_approximation: float = left
-res6_newton = newton_raphson_method(initial_approximation, error_tolerance, function_string)
-
-print(format(res1, ".5f"), "\n")
-print(res2, "\n")
-print(res3, "\n")
-print(res4_1)
-print(res4_2, "\n")
-print(res5, "\n")
-print(res6_bisection, "\n")
-print(res6_newton)
+newton_raphson_method(initial_approximation, error_tolerance, function_string)
