@@ -1,4 +1,4 @@
-## Intro to GitHub and Python Assignment
+## Assignment 1
 
 1. requirements.txt
 
