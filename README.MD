@@ -11,7 +11,7 @@
 
 For more information about the `requirements.txt` file: https://learnpython.com/blog/python-requirements-file/
 
-2. how to run intro_to_python.py from the command line
+2. how to run assignment_1.py file from the command line
 
 - cd to the file location: from the root directory `cd scr/main`
 - In the command line type `assignment_1.py` to run the program
